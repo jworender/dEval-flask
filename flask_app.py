@@ -11,7 +11,7 @@ from coincurve import PrivateKey, PublicKey
 app = Flask(__name__)
 
 # Load environment variables from .env file
-load_dotenv()
+#load_dotenv()
 
 # --- Key Setup ---
 # For demonstration, generate a new key pair at startup.
