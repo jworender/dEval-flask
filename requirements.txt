@@ -1,0 +1,7 @@
+requests
+base64
+hashlib
+functools
+flask
+python-dotenv
+coincurve
