@@ -72,7 +72,7 @@ The submodule is linked to a specific commit in the main repository. Even if you
    git push
    ```
 ## Pulling new code if you weren't the one that updated the submodule pointer
-###(this will be most users)
+### (this will be most users)
 
 Either:
 
