@@ -1,6 +1,6 @@
 # dEval-flask Submodule
 
-The "dEval" project includes the Git submodule "dEval-flask". Below is a quick guide on how to clone this repository as a submodule within the larger "dEval" repository with the submodule "dEval-flask" cloned as a subdirectory within it and then update the submodule pointer when changes are made.
+The "dEval" project includes the Git submodule "dEval-flask". Below is a quick guide on how to clone this repository as a submodule within the larger "dEval" repository with the submodule "dEval-flask" cloned as a subdirectory inside it and then update the submodule pointer when changes are made.
 
 ## Cloning the Repository with Submodules
 
@@ -88,9 +88,11 @@ Or:
 
    ```bash
    git pull
-   git submodule update --init --recursive
+   git submodule update --recursive
    ```
 
+   Note that this assumes that you already initialized the submodule at some point in the past. Go back to "Method 2: Initialize After Cloning" if you haven't done this yet.
+   
 ## Summary
 
 - **Cloning:** Use `--recurse-submodules` for a new clone or initialize/update submodules manually after cloning if the `--recurse-submodules` flag was not used initially.
