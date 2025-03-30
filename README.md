@@ -105,27 +105,23 @@ For more detailed information, refer to the [Git Submodules Documentation](https
 
 The following examples will demonstrate how to use the flask server and the Postgres database.
 
-===
-### Retrieve Token
 ---
+### Retrieve Token
 
 curl -X POST -H "Content-Type: application/json" -d '{"user": "validator", "role": "validator"}' https://deval-flask.onrender.com/token
 
-===
-### Test LLM Connection
 ---
+### Test LLM Connection
 
 curl -X POST -H "Content-Type: application/json" -d '{"prompt": "What is the air speed velocity of a swallow"}' https://deval-flask.onrender.com/test
 
-===
-### Test Authorization Code
 ---
+### Test Authorization Code
 
 curl -X GET -H "Authorization: Bearer <your token here> https://deval-flask.onrender.com/protected
 
-===
-### Add a record to the database
 ---
+### Add a record to the database
 
 TOKEN="<token here>"
 
@@ -151,9 +147,8 @@ curl -X POST \
 
   }' https://deval-flask.onrender.com/submit-score
 
-===
-### Retrieve All Scores
 ---
+### Retrieve All Scores
 
 curl -X GET https://deval-flask.onrender.com/all_scores
 
