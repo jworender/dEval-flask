@@ -10,6 +10,7 @@ from functools import wraps
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from coincurve import PrivateKey, PublicKey
+from tabulate import tabulate
 
 app = Flask(__name__)
 
@@ -267,6 +268,39 @@ def get_scores():
         conn.close()
 
         return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# --- Route to Fetch slimple leaderboard table ---
+@app.route('/leaderboard', methods=['GET'])
+def leaderboard_text():
+    try:
+        conn = psycopg2.connect(**DB_PARAMS)
+        cursor = conn.cursor()
+
+        query = """
+            SELECT test_id, model_id, validator_id, score
+            FROM test_scores
+            ORDER BY score DESC
+        """
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        headers = ['Test ID', 'Model ID', 'Validator ID', 'Score']
+        formatted_rows = [
+            [str(row[0]), str(row[1]), str(row[2]), float(row[3])]
+            for row in rows
+        ]
+
+        table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
+        print("\nLeaderboard:\n")
+        print(table)
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'status': 'printed to console'}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
