@@ -196,8 +196,8 @@ def submit_score():
         insert_query = """
             INSERT INTO test_scores (
                 test_id, model_id, validator_id, score,
-                metrics, evaluation_type, blockchain_tx_hash,
-                evaluation_timestamp
+                metrics, evaluation_type, hash,
+                evaluation_timestamp, metadata
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
 
