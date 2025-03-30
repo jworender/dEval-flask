@@ -198,7 +198,7 @@ def submit_score():
                 test_id, model_id, validator_id, score,
                 metrics, evaluation_type, hash,
                 evaluation_timestamp, metadata
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(insert_query, (
