@@ -7,7 +7,7 @@ import psycopg2
 from psycopg2.extras import Json
 from datetime import datetime
 from functools import wraps
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from dotenv import load_dotenv
 from coincurve import PrivateKey, PublicKey
 from tabulate import tabulate
@@ -294,13 +294,11 @@ def leaderboard_text():
         ]
 
         table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
-        print("\nLeaderboard:\n")
-        print(table)
 
         cursor.close()
         conn.close()
 
-        return jsonify({'status': 'printed to console'}), 200
+        return Response(table, mimetype='text/plain')
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return Response(f"Error: {str(e)}", mimetype='text/plain', status=500)
