@@ -100,3 +100,61 @@ Or:
 - If you don't care about the flask server, then don't worry about it, though.  You can always pull down the submodule at a later date using the steps above if you change your mind.
 
 For more detailed information, refer to the [Git Submodules Documentation](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+
+# Curl Examples
+
+The following examples will demonstrate how to use the flask server and the Postgres database.
+
+========================
+### Retrieve Token
+========================
+
+curl -X POST -H "Content-Type: application/json" -d '{"user": "validator", "role": "validator"}' https://deval-flask.onrender.com/token
+
+========================
+### Test LLM Connection
+========================
+
+curl -X POST -H "Content-Type: application/json" -d '{"prompt": "What is the air speed velocity of a swallow"}' https://deval-flask.onrender.com/test
+
+========================
+### Test Authorization Code
+========================
+
+curl -X GET -H "Authorization: Bearer <your token here> https://deval-flask.onrender.com/protected
+
+========================
+### Add a record to the database
+========================
+
+TOKEN="<token here>"
+
+curl -X POST \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "test_id": "1c97c740-bba0-4d2e-8459-bf7c761531a2",
+    "model_id": "7a18d370-41c1-4d9d-8135-93d8fc937317",
+    "validator_id": "0d845dc3-8f91-4eb8-978f-474d5dc86643",
+    "score": 93.5,
+    "metrics": {
+      "accuracy": 0.94,
+      "latency_ms": 120
+    },
+    "evaluation_type": "primary",
+    "hash": "0xabc123...",
+    "evaluation_timestamp": "2024-03-30T15:00:00Z",
+    "metadata": {
+      "Target": 100.00,
+      "goals": "return a json object with a sum of 7 and 93"
+    }
+
+  }' https://deval-flask.onrender.com/submit-score
+
+===========================
+### Retrieve All Scores
+===========================
+
+curl -X GET https://deval-flask.onrender.com/all_scores
+
+curl -X GET https://deval-flask.onrender.com/leaderboard
