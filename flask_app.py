@@ -210,7 +210,7 @@ def submit_score():
             data.get('evaluation_type'),
             data.get('hash'),
             data.get('evaluation_timestamp', datetime.utcnow()),
-            data.get('metadata')
+            Json(data.get('metadata', {}))
         ))
 
         conn.commit()
