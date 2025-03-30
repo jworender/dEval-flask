@@ -250,6 +250,7 @@ def get_scores():
         cursor.execute("""
             SELECT test_id, model_id, validator_id, score
             FROM test_scores
+            ORDER BY score
         """)
 
         rows = cursor.fetchall()
