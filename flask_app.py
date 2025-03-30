@@ -201,16 +201,33 @@ def submit_score():
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
+        # Safely extract values, using None or defaults
+        test_id = data['test_id']
+        model_id = data['model_id']
+        validator_id = data['validator_id']
+        score = float(data['score'])  # Ensure it’s numeric
+
+        metrics = Json(data.get('metrics') or {})
+        evaluation_type = data.get('evaluation_type')
+        hash_value = data.get('hash')
+        evaluation_timestamp = data.get('evaluation_timestamp')
+        if evaluation_timestamp is not None:
+            evaluation_timestamp = datetime.fromisoformat(evaluation_timestamp)
+        else:
+            evaluation_timestamp = datetime.utcnow()
+
+        metadata = Json(data.get('metadata') or {})
+
         cursor.execute(insert_query, (
-            data['test_id'],
-            data['model_id'],
-            data['validator_id'],
-            float(data['score']),
-            Json(data.get('metrics', {})),
-            data.get('evaluation_type'),
-            data.get('hash'),
-            data.get('evaluation_timestamp', datetime.utcnow()),
-            Json(data.get('metadata', {}))
+            test_id,
+            model_id,
+            validator_id,
+            score,
+            metrics,
+            evaluation_type,
+            hash_value,
+            evaluation_timestamp,
+            metadata
         ))
 
         conn.commit()
