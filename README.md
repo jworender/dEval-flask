@@ -123,7 +123,7 @@ curl -X GET -H "Authorization: Bearer <your token here> https://deval-flask.onre
 ---
 ### Add a record to the database
 
-TOKEN="<token here>"
+TOKEN="\<your token here\>"
 
 curl -X POST \
   -H "Authorization: Bearer $TOKEN" \
