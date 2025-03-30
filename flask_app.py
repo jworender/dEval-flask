@@ -3,6 +3,9 @@ import requests
 import json
 import base64
 import hashlib
+import psycopg2
+from psycopg2.extras import Json
+from datetime import datetime
 from functools import wraps
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
@@ -18,10 +21,19 @@ app = Flask(__name__)
 private_key_obj = PrivateKey()
 public_key_obj = private_key_obj.public_key
 
+# --- Database Parameters ---
+DB_PARAMS = {
+    'dbname': os.environ.get('POSTGRES_DBNAME'),
+    'user': os.environ.get('POSTGRES_USER'),
+    'password': os.environ.get('POSTGRES_PW'),
+    'host': os.environ.get('POSTGRES_HOST'),
+    'port': os.environ.get('POSTGRES_PORT')
+}
+
 # Get the API key and endpoint URL from environment variables.
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 # Default to the standard OpenAI completions endpoint, but this can be set to any compatible URL.
-OPENAI_API_URL = os.environ.get('OPENAI_API_URL', 'https://api.openai.com/v1/completions')
+OPENAI_API_URL = os.environ.get('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions')
 
 @app.route('/')
 def index():
@@ -138,7 +150,7 @@ def require_jws(f):
 def generate_token():
     """
     For demonstration purposes, this endpoint creates a JWS token.
-    In a real scenario, you'd authenticate the user before issuing a token.
+    In a real scenario, we will authenticate the user before issuing a token.
     """
     # Example payload; in practice, include relevant claims (like user ID, role, etc.).
     payload = request.get_json() or {"user": "validator", "role": "validator"}
@@ -161,3 +173,51 @@ if __name__ == '__main__':
     # Run the Flask server. Adjust debug and host as needed.
     # may want to consider Nginx in production for security and control
     app.run(debug=True, host='0.0.0.0', port=5000)
+
+# --- Flask Route to Insert a Score ---
+@app.route('/submit-score', methods=['POST'])
+@require_jws
+def submit_score():
+    data = request.get_json()
+
+    # Required fields: adjust as needed
+    required_fields = [
+        'test_id', 'model_id', 'validator_id', 'score'
+    ]
+
+    for field in required_fields:
+        if field not in data:
+            return jsonify({'error': f'Missing required field: {field}'}), 400
+
+    try:
+        conn = psycopg2.connect(**DB_PARAMS)
+        cursor = conn.cursor()
+
+        insert_query = """
+            INSERT INTO test_scores (
+                test_id, model_id, validator_id, score,
+                metrics, evaluation_type, blockchain_tx_hash,
+                evaluation_timestamp
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        cursor.execute(insert_query, (
+            data['test_id'],
+            data['model_id'],
+            data['validator_id'],
+            float(data['score']),
+            Json(data.get('metrics', {})),
+            data.get('evaluation_type'),
+            data.get('hash'),
+            data.get('evaluation_timestamp', datetime.utcnow()),
+            data.get('metadata')
+        ))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({'status': 'success'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
