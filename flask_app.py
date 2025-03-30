@@ -238,3 +238,34 @@ def submit_score():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+# --- Route to Fetch Basic Score Info ---
+@app.route('/all_scores', methods=['GET'])
+def get_scores():
+    try:
+        conn = psycopg2.connect(**DB_PARAMS)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT test_id, model_id, validator_id, score
+            FROM test_scores
+        """)
+
+        rows = cursor.fetchall()
+        result = []
+        for row in rows:
+            result.append({
+                'test_id': row[0],
+                'model_id': row[1],
+                'validator_id': row[2],
+                'score': float(row[3])
+            })
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
