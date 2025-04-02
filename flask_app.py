@@ -285,12 +285,12 @@ def leaderboard_text():
         if ('validator' in data) or ('test' in data):
             if 'validator' in data:
                 validator = data.get('validator')
-                where_clause = f"validator_id = {validator}"
+                where_clause = f"validator_id = \"{validator}\""
             if 'test' in data:
                 test = data.get('test')
                 if where_clause:
                     where_clause += " AND "
-                where_clause += f"test_id = {test}"
+                where_clause += f"test_id = \"{test}\""
 
         if where_clause:
             query = """
