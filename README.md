@@ -119,7 +119,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"prompt": "What is the air
 ---
 ### Test Authorization Code
 
-curl -X GET -H "Authorization: Bearer <<your token here>> https://deval-flask.onrender.com/protected
+curl -X GET -H "Authorization: Bearer *your token here* https://deval-flask.onrender.com/protected
 
 ---
 ### Add a record to the database
@@ -159,10 +159,10 @@ curl -X GET https://deval-flask.onrender.com/all_scores
 curl -X GET https://deval-flask.onrender.com/leaderboard
 
 #### **To get the model rankings for a specific validator and all tests**:
-curl -X POST -H "Content-Type: application/json" -d '{"validator": "<<validator id>>"}'  https://deval-flask.onrender.com/leaderboard
+curl -X POST -H "Content-Type: application/json" -d '{"validator": "*validator id*"}'  https://deval-flask.onrender.com/leaderboard
 
 #### **To get the model rankings for a specific test and all validators**:
-curl -X POST -H "Content-Type: application/json" -d '{"test": "<<test id>>"}'  https://deval-flask.onrender.com/leaderboard
+curl -X POST -H "Content-Type: application/json" -d '{"test": "*test id*"}'  https://deval-flask.onrender.com/leaderboard
 
 #### **To get all model rankings for a specific test and validator**:
-curl -X POST -H "Content-Type: application/json" -d '{"test": "<<test id>>","validator": "<<validator id>>"}'  https://deval-flask.onrender.com/leaderboard
+curl -X POST -H "Content-Type: application/json" -d '{"test": "*test id*","validator": "*validator id*"}'  https://deval-flask.onrender.com/leaderboard
