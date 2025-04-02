@@ -51,7 +51,7 @@ The submodule is linked to a specific commit in the main repository. Even if you
 3. **Return to the main repository's root directory:**
 
    ```bash
-   cd ../..
+   cd ..
    ```
 
 4. **Stage the submodule update:**
@@ -66,9 +66,10 @@ The submodule is linked to a specific commit in the main repository. Even if you
    git commit -m "Update submodule pointer to latest commit"
    ```
 
-6. **Push the commit:**
+6. **Push the commit after pulling any updates from the main module:**
 
    ```bash
+   git pull
    git push
    ```
 ## Pulling new code if you weren't the one that updated the submodule pointer
