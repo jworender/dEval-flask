@@ -334,7 +334,7 @@ def leaderboard_text():
         cursor.close()
         conn.close()
 
-        return Response(table + "\n\n" + validators + "\n\n" tests, mimetype='text/plain')
+        return Response(table + "\n\n" + validators + "\n\n" + tests, mimetype='text/plain')
 
     except Exception as e:
         return Response(f"Error: {str(e)}", mimetype='text/plain')
