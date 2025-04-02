@@ -273,20 +273,33 @@ def get_scores():
         return jsonify({'error': str(e)}), 500
 
 # --- Route to Fetch slimple leaderboard table ---
-@app.route('/leaderboard', methods=['GET','POST'])
+@app.route('/leaderboard', methods=['GET', 'POST'])
 def leaderboard_text():
+    data = request.get_json(silent=True) or {}
+
     try:
         conn = psycopg2.connect(**DB_PARAMS)
         cursor = conn.cursor()
 
-        query = """
-            SELECT model_id, AVG(score) AS mean_score
-            FROM test_scores
-            GROUP BY model_id
-            ORDER BY mean_score DESC
-        """
-        
-        cursor.execute(query)
+        if 'validator' in data:
+            validator = data.get('validator')
+            query = """
+                SELECT model_id, AVG(score) AS mean_score
+                FROM test_scores
+                WHERE validator_id = %s
+                GROUP BY model_id
+                ORDER BY mean_score DESC
+            """
+            cursor.execute(query, [validator])
+        else:
+            query = """
+                SELECT model_id, AVG(score) AS mean_score
+                FROM test_scores
+                GROUP BY model_id
+                ORDER BY mean_score DESC
+            """
+            cursor.execute(query)
+
         rows = cursor.fetchall()
 
         headers = ['Model ID', 'Mean Score']
@@ -294,48 +307,43 @@ def leaderboard_text():
             [str(row[0]), float(row[1])]
             for row in rows
         ]
-
         table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
 
-        query = """
+        # Validators considered
+        cursor.execute("""
             SELECT validator_id
             FROM test_scores
             GROUP BY validator_id
             ORDER BY validator_id
-        """
-        
-        cursor.execute(query)
+        """)
         rows_val = cursor.fetchall()
-        
-        query = """
+
+        # Tests considered
+        cursor.execute("""
             SELECT test_id
             FROM test_scores
             GROUP BY test_id
             ORDER BY test_id
-        """
-        
-        cursor.execute(query)
+        """)
         rows_test = cursor.fetchall()
 
         lval = len(rows_val)
         ltest = len(rows_test)
-        if (lval > ltest):
-            l = lval
-        else:
-            l = ltest
-        formatted_rows = [ [(rows_val[i][0] if i < lval else " "), (rows_test[i][0] if i < ltest else " ")] for i in range(l) ]             
-        headers = ['Validators Considered', 'Tests Considered']
-
-        considered = tabulate(formatted_rows, headers=headers, tablefmt="grid")
+        l = max(lval, ltest)
         
+        formatted_rows = [
+            [
+                (rows_val[i][0] if i < lval else " "),
+                (rows_test[i][0] if i < ltest else " ")
+            ] for i in range(l)
+        ]
+        headers = ['Validators Considered', 'Tests Considered']
+        considered = tabulate(formatted_rows, headers=headers, tablefmt="grid")
+
         cursor.close()
         conn.close()
 
         return Response(table + "\n\n" + considered, mimetype='text/plain')
-
-    except Exception as e:
-        return Response(f"Error: {str(e)}", mimetype='text/plain')
-
 
     except Exception as e:
         return Response(f"Error: {str(e)}", mimetype='text/plain', status=500)
