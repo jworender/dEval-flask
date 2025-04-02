@@ -325,7 +325,7 @@ def leaderboard_text():
             l = lval
         else:
             l = ltest
-        formatted_rows = [ [(rows_val[i][0] if i < lval else " "), (rows_test[i] if i < ltest else " ")] for i in range(l+1) ]             
+        formatted_rows = [ [(rows_val[i][0] if i < lval else " "), (rows_test[i][0] if i < ltest else " ")] for i in range(l) ]             
         headers = ['Validators Considered', 'Tests Considered']
 
         tests = tabulate(formatted_rows, headers=headers, tablefmt="grid")
