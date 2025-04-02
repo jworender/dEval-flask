@@ -310,13 +310,16 @@ def leaderboard_text():
         table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
 
         # Validators considered
-        cursor.execute("""
-            SELECT validator_id
-            FROM test_scores
-            GROUP BY validator_id
-            ORDER BY validator_id
-        """)
-        rows_val = cursor.fetchall()
+        if ('validator' in data):
+            cursor.execute("""
+                SELECT validator_id
+                FROM test_scores
+                GROUP BY validator_id
+                ORDER BY validator_id
+            """)
+            rows_val = cursor.fetchall()
+        else:
+            rows_val = [ [ validator ] ]
 
         # Tests considered
         cursor.execute("""
