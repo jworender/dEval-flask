@@ -292,6 +292,7 @@ def leaderboard_text():
             """
             cursor.execute(query, [validator])
         else:
+            validator = None
             query = """
                 SELECT model_id, AVG(score) AS mean_score
                 FROM test_scores
