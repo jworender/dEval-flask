@@ -281,18 +281,27 @@ def leaderboard_text():
         conn = psycopg2.connect(**DB_PARAMS)
         cursor = conn.cursor()
 
-        if 'validator' in data:
-            validator = data.get('validator')
+        where_clause = None
+        if ('validator' in data) or ('test' in data):
+            if 'validator' in data:
+                validator = data.get('validator')
+                where_clause = f"validator_id = {validator}"
+            if 'test' in data:
+                test = data.get('test')
+                if where_clause:
+                    where_clause += " AND "
+                where_clause += f"test_id = {test}"
+
+        if where_clause:
             query = """
                 SELECT model_id, AVG(score) AS mean_score
                 FROM test_scores
-                WHERE validator_id = %s
+                WHERE %s
                 GROUP BY model_id
                 ORDER BY mean_score DESC
             """
-            cursor.execute(query, [validator])
+            cursor.execute(query, [ where_clause ])
         else:
-            validator = None
             query = """
                 SELECT model_id, AVG(score) AS mean_score
                 FROM test_scores
@@ -322,14 +331,17 @@ def leaderboard_text():
             """)
             rows_val = cursor.fetchall()
             
-        # Tests considered
-        cursor.execute("""
-            SELECT test_id
-            FROM test_scores
-            GROUP BY test_id
-            ORDER BY test_id
-        """)
-        rows_test = cursor.fetchall()
+        if ('test' in data):
+            rows_test = [ [ test ] ]
+        else:
+            # Tests considered
+            cursor.execute("""
+                SELECT test_id
+                FROM test_scores
+                GROUP BY test_id
+                ORDER BY test_id
+            """)
+            rows_test = cursor.fetchall()
 
         lval = len(rows_val)
         ltest = len(rows_test)
