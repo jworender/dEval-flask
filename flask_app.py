@@ -273,7 +273,7 @@ def get_scores():
         return jsonify({'error': str(e)}), 500
 
 # --- Route to Fetch slimple leaderboard table ---
-@app.route('/leaderboard', methods=['GET'])
+@app.route('/leaderboard', methods=['GET','POST'])
 def leaderboard_text():
     try:
         conn = psycopg2.connect(**DB_PARAMS)
