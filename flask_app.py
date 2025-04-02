@@ -281,26 +281,28 @@ def leaderboard_text():
         conn = psycopg2.connect(**DB_PARAMS)
         cursor = conn.cursor()
 
-        where_clause = None
-        if ('validator' in data) or ('test' in data):
-            if 'validator' in data:
-                validator = data.get('validator')
-                where_clause = f"validator_id = \"{validator}\""
-            if 'test' in data:
-                test = data.get('test')
-                if where_clause:
-                    where_clause += " AND "
-                where_clause += f"test_id = \"{test}\""
+        where_clauses = []
+        params = []
 
-        if where_clause:
-            query = """
+        if 'validator' in data:
+            where_clauses.append("validator_id = %s")
+            params.append(data['validator'])
+
+        if 'test' in data:
+            where_clauses.append("test_id = %s")
+            params.append(data['test'])
+
+        where_sql = " AND ".join(where_clauses)
+
+        if where_sql:
+            query = f"""
                 SELECT model_id, AVG(score) AS mean_score
                 FROM test_scores
-                WHERE %s
+                WHERE {where_sql}
                 GROUP BY model_id
                 ORDER BY mean_score DESC
             """
-            cursor.execute(query, [ where_clause ])
+            cursor.execute(query, params)
         else:
             query = """
                 SELECT model_id, AVG(score) AS mean_score
