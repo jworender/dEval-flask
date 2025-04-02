@@ -305,12 +305,7 @@ def leaderboard_text():
         """
         
         cursor.execute(query)
-        rows = cursor.fetchall()
-        headers = ['Validators Considered']
-        formatted_rows = [
-            [str(row[0])]
-            for row in rows
-        ]
+        rows_val = cursor.fetchall()
 
         validators = tabulate(formatted_rows, headers=headers, tablefmt="grid")
         
@@ -322,12 +317,16 @@ def leaderboard_text():
         """
         
         cursor.execute(query)
-        rows = cursor.fetchall()
-        headers = ['Tests Considered']
-        formatted_rows = [
-            [str(row[0])]
-            for row in rows
-        ]
+        rows_test = cursor.fetchall()
+
+        lval = len(rows_val)
+        ltest = len(rows_test)
+        if (lval > ltest):
+            l = lval
+        else:
+            l = ltest
+        formatted_rows = [ (rows_val[i] if i <= lval else " ") + (rows_test[i] if i <= ltest else " ") for i in range(l+1) ]             
+        headers = ['Validators Considered', 'Tests Considered']
 
         tests = tabulate(formatted_rows, headers=headers, tablefmt="grid")
         
