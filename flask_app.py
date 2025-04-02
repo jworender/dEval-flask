@@ -323,7 +323,7 @@ def leaderboard_text():
 
         # Validators considered
         if ('validator' in data):
-            rows_val = [ [ validator ] ]
+            rows_val = [ [ data['validator'] ] ]
         else:
             cursor.execute("""
                 SELECT validator_id
@@ -334,7 +334,7 @@ def leaderboard_text():
             rows_val = cursor.fetchall()
             
         if ('test' in data):
-            rows_test = [ [ test ] ]
+            rows_test = [ [ data['test'] ] ]
         else:
             # Tests considered
             cursor.execute("""
