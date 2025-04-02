@@ -312,6 +312,8 @@ def leaderboard_text():
 
         # Validators considered
         if ('validator' in data):
+            rows_val = [ [ validator ] ]
+        else:
             cursor.execute("""
                 SELECT validator_id
                 FROM test_scores
@@ -319,9 +321,7 @@ def leaderboard_text():
                 ORDER BY validator_id
             """)
             rows_val = cursor.fetchall()
-        else:
-            rows_val = [ [ validator ] ]
-
+            
         # Tests considered
         cursor.execute("""
             SELECT test_id
