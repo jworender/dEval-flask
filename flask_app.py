@@ -289,9 +289,9 @@ def leaderboard_text():
         cursor.execute(query)
         rows = cursor.fetchall()
 
-        headers = ['Test ID', 'Model ID', 'Validator ID', 'Score']
+        headers = ['Model ID', 'Mean Score']
         formatted_rows = [
-            [str(row[0]), str(row[1]), str(row[2]), float(row[3])]
+            [str(row[0]), float(row[1])]
             for row in rows
         ]
 
@@ -301,6 +301,10 @@ def leaderboard_text():
         conn.close()
 
         return Response(table, mimetype='text/plain')
+
+    except Exception as e:
+        return Response(f"Error: {str(e)}", mimetype='text/plain')
+
 
     except Exception as e:
         return Response(f"Error: {str(e)}", mimetype='text/plain', status=500)
