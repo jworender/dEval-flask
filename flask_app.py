@@ -306,7 +306,7 @@ def leaderboard_text():
         
         cursor.execute(query)
         rows = cursor.fetchall()
-        headers = ['Validator ID']
+        headers = ['Validators Considered']
         formatted_rows = [
             [str(row[0])]
             for row in rows
@@ -314,10 +314,27 @@ def leaderboard_text():
 
         validators = tabulate(formatted_rows, headers=headers, tablefmt="grid")
         
+        query = """
+            SELECT test_id
+            FROM test_scores
+            GROUP BY test_id
+            ORDER BY test_id
+        """
+        
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        headers = ['Tests Considered']
+        formatted_rows = [
+            [str(row[0])]
+            for row in rows
+        ]
+
+        tests = tabulate(formatted_rows, headers=headers, tablefmt="grid")
+        
         cursor.close()
         conn.close()
 
-        return Response(table + "\n" + validators, mimetype='text/plain')
+        return Response(table + "\n\n" + validators + "\n\n" tests, mimetype='text/plain')
 
     except Exception as e:
         return Response(f"Error: {str(e)}", mimetype='text/plain')
