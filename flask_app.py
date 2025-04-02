@@ -280,10 +280,12 @@ def leaderboard_text():
         cursor = conn.cursor()
 
         query = """
-            SELECT test_id, model_id, validator_id, score
+            SELECT model_id, AVG(score) AS mean_score
             FROM test_scores
-            ORDER BY score DESC
+            GROUP BY model_id
+            ORDER BY mean_score DESC
         """
+        
         cursor.execute(query)
         rows = cursor.fetchall()
 
