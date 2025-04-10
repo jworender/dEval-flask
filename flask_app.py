@@ -197,8 +197,9 @@ def submit_score():
         insert_query = """
             INSERT INTO test_scores (
                 evaluationrunid, modeldid, validatordid, score,
-                metrics, evaluation_type, hash,
-                evaluation_timestamp, metadata
+                metrics, evaluationdid, promptcid, responsecid, hash,
+                promptedat, repliedat, promptdata, responsedata,
+                correctresponse, metadata
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
@@ -209,13 +210,25 @@ def submit_score():
         score = float(data['score'])  # Ensure it’s numeric
 
         metrics = Json(data.get('metrics') or {})
-        evaluation_type = data.get('evaluation_type')
-        hash_value = data.get('hash')
-        evaluation_timestamp = data.get('evaluation_timestamp')
-        if evaluation_timestamp is not None:
-            evaluation_timestamp = datetime.fromisoformat(evaluation_timestamp)
+        evaluationdid = data.get('evaluationDID')
+        promptcid = data.get('promptCID')
+        responsecid = data.get('responseCID')
+        promptdata = data.get('promptData')
+        responsedata = data.get('responseData')
+        correctresponse = data.get('correctResponse')
+
+        hashvalue = data.get('hash')
+
+        promptedat = data.get('promptedAt')
+        if promptedat is not None:
+            promptedat = datetime.fromisoformat(promptedat)
         else:
-            evaluation_timestamp = datetime.utcnow()
+            promptedat = datetime.utcnow()
+        repliedat = data.get('repliedAt')
+        if repliedat is not None:
+            repliedat = datetime.fromisoformat(repliedat)
+        else:
+            repliedat = datetime.utcnow()
 
         metadata = Json(data.get('metadata') or {})
 
@@ -225,9 +238,15 @@ def submit_score():
             validatordid,
             score,
             metrics,
-            evaluation_type,
-            hash_value,
-            evaluation_timestamp,
+            evaluationdid,
+            promptcid,
+            responsecid,
+            hashvalue,
+            promptedat,
+            repliedat,
+            promptdata,
+            responsedata,
+            correctresponse,
             metadata
         ))
 
