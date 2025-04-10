@@ -205,8 +205,8 @@ def submit_score():
         insert_query = """
             INSERT INTO test_scores (
                 evaluationrunid, modeldid, validatordid, score,
-                metrics, evaluationdid, metadata
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                metrics, evaluationdid, promptcid, metadata
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         # Safely extract values, using None or defaults
@@ -217,7 +217,7 @@ def submit_score():
 
         metrics = Json(data.get('metrics') or {})
         evaluationdid = data.get('evaluationDID')
-        #promptcid = data.get('promptCID')
+        promptcid = data.get('promptCID')
         #responsecid = data.get('responseCID')
         #promptdata = data.get('promptData')
         #responsedata = data.get('responseData')
@@ -245,7 +245,7 @@ def submit_score():
             score,
             metrics,
             evaluationdid,
-            #promptcid,
+            promptcid,
             #responsecid,
             #hashvalue,
             #promptedat,
