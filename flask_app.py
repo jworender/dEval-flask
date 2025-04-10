@@ -258,9 +258,9 @@ def get_scores():
         result = []
         for row in rows:
             result.append({
-                'evaluationrunid': row[0],
-                'modeldid': row[1],
-                'validatordid': row[2],
+                'evaluationRunId': row[0],
+                'modelDID': row[1],
+                'validatorDID': row[2],
                 'score': float(row[3])
             })
 
@@ -284,9 +284,9 @@ def leaderboard_text():
         where_clauses = []
         params = []
 
-        if 'validatorDID' in data:
+        if 'validator' in data:
             where_clauses.append("validatordid = %s")
-            params.append(data['validatorDID'])
+            params.append(data['validator'])
 
         if 'evaluationRunId' in data:
             where_clauses.append("evaluationrunid = %s")
@@ -322,8 +322,8 @@ def leaderboard_text():
         table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
 
         # Validators considered
-        if ('validatorDID' in data):
-            rows_val = [ [ data['validatorDID'] ] ]
+        if ('validator' in data):
+            rows_val = [ [ data['validator'] ] ]
         else:
             cursor.execute("""
                 SELECT validatordid
@@ -333,8 +333,8 @@ def leaderboard_text():
             """)
             rows_val = cursor.fetchall()
             
-        if ('evaluationrunid' in data):
-            rows_test = [ [ data['evaluationrunid'] ] ]
+        if ('test' in data):
+            rows_test = [ [ data['test'] ] ]
         else:
             # Tests considered
             cursor.execute("""
