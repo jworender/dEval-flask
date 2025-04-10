@@ -206,7 +206,7 @@ def submit_score():
             INSERT INTO test_scores (
                 evaluationrunid, modeldid, validatordid, score,
                 metrics, metadata
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ) VALUES (%s, %s, %s, %s, %s, %s)
         """
 
         # Safely extract values, using None or defaults
