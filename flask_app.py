@@ -205,8 +205,10 @@ def submit_score():
         insert_query = """
             INSERT INTO test_scores (
                 evaluationrunid, modeldid, validatordid, score,
-                metrics, evaluationdid, promptcid, metadata
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                metrics, evaluationdid, promptcid, responsecid, hash,
+                promptedat, repliedat, promptdata, responsedata,
+                correctresponse, metadata
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         # Safely extract values, using None or defaults
@@ -218,23 +220,23 @@ def submit_score():
         metrics = Json(data.get('metrics') or {})
         evaluationdid = data.get('evaluationDID')
         promptcid = data.get('promptCID')
-        #responsecid = data.get('responseCID')
-        #promptdata = data.get('promptData')
-        #responsedata = data.get('responseData')
-        #correctresponse = data.get('correctResponse')
+        responsecid = data.get('responseCID')
+        promptdata = data.get('promptData')
+        responsedata = data.get('responseData')
+        correctresponse = data.get('correctResponse')
 
-        #hashvalue = data.get('hash')
+        hashvalue = data.get('hash')
 
-        #promptedat = data.get('promptedAt')
-        #if promptedat is not None:
-        #    promptedat = datetime.fromisoformat(promptedat)
-        #else:
-        #    promptedat = datetime.utcnow()
-        #repliedat = data.get('repliedAt')
-        #if repliedat is not None:
-        #    repliedat = datetime.fromisoformat(repliedat)
-        #else:
-        #    repliedat = datetime.utcnow()
+        promptedat = data.get('promptedAt')
+        if promptedat is not None:
+            promptedat = datetime.fromisoformat(promptedat)
+        else:
+            promptedat = datetime.utcnow()
+        repliedat = data.get('repliedAt')
+        if repliedat is not None:
+            repliedat = datetime.fromisoformat(repliedat)
+        else:
+            repliedat = datetime.utcnow()
 
         metadata = Json(data.get('metadata') or {})
 
@@ -246,13 +248,13 @@ def submit_score():
             metrics,
             evaluationdid,
             promptcid,
-            #responsecid,
-            #hashvalue,
-            #promptedat,
-            #repliedat,
-            #promptdata,
-            #responsedata,
-            #correctresponse,
+            responsecid,
+            hashvalue,
+            promptedat,
+            repliedat,
+            promptdata,
+            responsedata,
+            correctresponse,
             metadata
         ))
 
