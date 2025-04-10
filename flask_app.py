@@ -204,31 +204,31 @@ def submit_score():
         """
 
         # Safely extract values, using None or defaults
-        evaluationrunid = data['evaluationRunId']
-        modeldid = data['modelDID']
-        validatordid = data['validatorDID']
-        score = float(data['score'])  # Ensure it’s numeric
+        evaluationrunid = data.get('evaluationRunId')
+        modeldid = data.get('modelDID')
+        validatordid = data.get('validatorDID')
+        score = float(data.get('score'))  # Ensure it’s numeric
 
         metrics = Json(data.get('metrics') or {})
-        evaluationdid = data.get('evaluationDID')
-        promptcid = data.get('promptCID')
-        responsecid = data.get('responseCID')
-        promptdata = data.get('promptData')
-        responsedata = data.get('responseData')
-        correctresponse = data.get('correctResponse')
+        #evaluationdid = data.get('evaluationDID')
+        #promptcid = data.get('promptCID')
+        #responsecid = data.get('responseCID')
+        #promptdata = data.get('promptData')
+        #responsedata = data.get('responseData')
+        #correctresponse = data.get('correctResponse')
 
-        hashvalue = data.get('hash')
+        #hashvalue = data.get('hash')
 
-        promptedat = data.get('promptedAt')
-        if promptedat is not None:
-            promptedat = datetime.fromisoformat(promptedat)
-        else:
-            promptedat = datetime.utcnow()
-        repliedat = data.get('repliedAt')
-        if repliedat is not None:
-            repliedat = datetime.fromisoformat(repliedat)
-        else:
-            repliedat = datetime.utcnow()
+        #promptedat = data.get('promptedAt')
+        #if promptedat is not None:
+        #    promptedat = datetime.fromisoformat(promptedat)
+        #else:
+        #    promptedat = datetime.utcnow()
+        #repliedat = data.get('repliedAt')
+        #if repliedat is not None:
+        #    repliedat = datetime.fromisoformat(repliedat)
+        #else:
+        #    repliedat = datetime.utcnow()
 
         metadata = Json(data.get('metadata') or {})
 
@@ -238,15 +238,15 @@ def submit_score():
             validatordid,
             score,
             metrics,
-            evaluationdid,
-            promptcid,
-            responsecid,
-            hashvalue,
-            promptedat,
-            repliedat,
-            promptdata,
-            responsedata,
-            correctresponse,
+            #evaluationdid,
+            #promptcid,
+            #responsecid,
+            #hashvalue,
+            #promptedat,
+            #repliedat,
+            #promptdata,
+            #responsedata,
+            #correctresponse,
             metadata
         ))
 
