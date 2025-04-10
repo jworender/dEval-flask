@@ -204,8 +204,8 @@ def submit_score():
         """
 
         # Safely extract values, using None or defaults
-        evaluationrunid = data['evaluationrunid']
-        modeldid = data['modeldid']
+        evaluationrunid = data['evaluationRunId']
+        modeldid = data['modelDID']
         validatordid = data['validatorDID']
         score = float(data['score'])  # Ensure it’s numeric
 
