@@ -228,15 +228,15 @@ def submit_score():
         hashvalue = data.get('hash')
 
         promptedat = data.get('promptedAt')
-        if promptedat is not None:
-            promptedat = datetime.fromisoformat(promptedat)
-        else:
-            promptedat = datetime.utcnow()
+        #if promptedat is not None:
+        #    promptedat = datetime.fromisoformat(promptedat)
+        #else:
+        #    promptedat = datetime.utcnow()
         repliedat = data.get('repliedAt')
-        if repliedat is not None:
-            repliedat = datetime.fromisoformat(repliedat)
-        else:
-            repliedat = datetime.utcnow()
+        #if repliedat is not None:
+        #    repliedat = datetime.fromisoformat(repliedat)
+        #else:
+        #    repliedat = datetime.utcnow()
 
         metadata = Json(data.get('metadata') or {})
 
