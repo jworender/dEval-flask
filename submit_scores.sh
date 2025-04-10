@@ -7,8 +7,9 @@ if [ "$#" -ne 2 ]; then
 fi
 
 JSON_FILE="$1"
+echo "FILE: $JSON_FILE"
 ENDPOINT_URL="$2"
-TOKEN="Bearer eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJ1c2VyIjoidmFsaWRhdG9yIiwicm9sZSI6InZhbGlkYXRvciJ9.MEQCIDFhpJgw_RhWiPnFQFAZj0UzEJYkGayw0OCYYTyPtM4jAiBq_1i_lBcr7FQ1OoT-pzC_vufeID0t-Edpq7KegnWJlw"
+TOKEN="Bearer eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJ1c2VyIjoidmFsaWRhdG9yIiwicm9sZSI6InZhbGlkYXRvciJ9.MEQCIFDFHgK3nCJCUs0dzT815hyCwFSmahYk1Tbh8ApgB0BGAiBw5z6mP1OaBeS6LBpbJscWrtKXw3y0pg2Lpb79KNUnyw"
 
 # Check if jq is installed
 if ! command -v jq &> /dev/null; then
@@ -17,13 +18,13 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Read each JSON object from the file and POST it to the server
-for record in $(jq -c '.[]' "$JSON_FILE"); do
+while IFS= read -r record; do
   echo "Submitting: $record"
   curl -X POST "$ENDPOINT_URL" \
     -H "Authorization: $TOKEN" \
     -H "Content-Type: application/json" \
     -d "$record"
   echo -e "\n---"
-done
+done < <(jq -c '.[]' "$JSON_FILE")
 
 echo "Submission complete."
