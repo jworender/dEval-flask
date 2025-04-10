@@ -194,12 +194,18 @@ def submit_score():
         conn = psycopg2.connect(**DB_PARAMS)
         cursor = conn.cursor()
 
+        #insert_query = """
+        #    INSERT INTO test_scores (
+        #        evaluationrunid, modeldid, validatordid, score,
+        #        metrics, evaluationdid, promptcid, responsecid, hash,
+        #        promptedat, repliedat, promptdata, responsedata,
+        #        correctresponse, metadata
+        #    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        #"""
         insert_query = """
             INSERT INTO test_scores (
                 evaluationrunid, modeldid, validatordid, score,
-                metrics, evaluationdid, promptcid, responsecid, hash,
-                promptedat, repliedat, promptdata, responsedata,
-                correctresponse, metadata
+                metrics, metadata
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
