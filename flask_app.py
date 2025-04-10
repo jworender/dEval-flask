@@ -183,7 +183,7 @@ def submit_score():
 
     # Required fields: adjust as needed
     required_fields = [
-        'test_id', 'model_id', 'validator_id', 'score'
+        'evaluationRunId', 'modelDID', 'validatorDID', 'score'
     ]
 
     for field in required_fields:
@@ -196,16 +196,16 @@ def submit_score():
 
         insert_query = """
             INSERT INTO test_scores (
-                test_id, model_id, validator_id, score,
+                evaluationrunid, modeldid, validatordid, score,
                 metrics, evaluation_type, hash,
                 evaluation_timestamp, metadata
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         # Safely extract values, using None or defaults
-        test_id = data['test_id']
-        model_id = data['model_id']
-        validator_id = data['validator_id']
+        evaluationrunid = data['evaluationrunid']
+        modeldid = data['modeldid']
+        validatordid = data['validatorDID']
         score = float(data['score'])  # Ensure it’s numeric
 
         metrics = Json(data.get('metrics') or {})
@@ -220,9 +220,9 @@ def submit_score():
         metadata = Json(data.get('metadata') or {})
 
         cursor.execute(insert_query, (
-            test_id,
-            model_id,
-            validator_id,
+            evaluationrunid,
+            modeldid,
+            validatordid,
             score,
             metrics,
             evaluation_type,
@@ -249,7 +249,7 @@ def get_scores():
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT test_id, model_id, validator_id, score
+            SELECT evaluationrunid, modeldid, validatordid, score
             FROM test_scores
             ORDER BY score DESC
         """)
@@ -258,9 +258,9 @@ def get_scores():
         result = []
         for row in rows:
             result.append({
-                'test_id': row[0],
-                'model_id': row[1],
-                'validator_id': row[2],
+                'evaluationrunid': row[0],
+                'modeldid': row[1],
+                'validatordid': row[2],
                 'score': float(row[3])
             })
 
@@ -284,30 +284,30 @@ def leaderboard_text():
         where_clauses = []
         params = []
 
-        if 'validator' in data:
-            where_clauses.append("validator_id = %s")
-            params.append(data['validator'])
+        if 'validatorDID' in data:
+            where_clauses.append("validatordid = %s")
+            params.append(data['validatorDID'])
 
-        if 'test' in data:
-            where_clauses.append("test_id = %s")
-            params.append(data['test'])
+        if 'evaluationRunId' in data:
+            where_clauses.append("evaluationrunid = %s")
+            params.append(data['evaluationrunid'])
 
         where_sql = " AND ".join(where_clauses)
 
         if where_sql:
             query = f"""
-                SELECT model_id, AVG(score) AS mean_score
+                SELECT modeldid, AVG(score) AS mean_score
                 FROM test_scores
                 WHERE {where_sql}
-                GROUP BY model_id
+                GROUP BY modeldid
                 ORDER BY mean_score DESC
             """
             cursor.execute(query, params)
         else:
             query = """
-                SELECT model_id, AVG(score) AS mean_score
+                SELECT modeldid, AVG(score) AS mean_score
                 FROM test_scores
-                GROUP BY model_id
+                GROUP BY modeldid
                 ORDER BY mean_score DESC
             """
             cursor.execute(query)
@@ -322,26 +322,26 @@ def leaderboard_text():
         table = tabulate(formatted_rows, headers=headers, tablefmt="grid")
 
         # Validators considered
-        if ('validator' in data):
-            rows_val = [ [ data['validator'] ] ]
+        if ('validatorDID' in data):
+            rows_val = [ [ data['validatorDID'] ] ]
         else:
             cursor.execute("""
-                SELECT validator_id
+                SELECT validatordid
                 FROM test_scores
-                GROUP BY validator_id
-                ORDER BY validator_id
+                GROUP BY validatordid
+                ORDER BY validatordid
             """)
             rows_val = cursor.fetchall()
             
-        if ('test' in data):
-            rows_test = [ [ data['test'] ] ]
+        if ('evaluationrunid' in data):
+            rows_test = [ [ data['evaluationrunid'] ] ]
         else:
             # Tests considered
             cursor.execute("""
-                SELECT test_id
+                SELECT evaluationrunid
                 FROM test_scores
-                GROUP BY test_id
-                ORDER BY test_id
+                GROUP BY evaluationrunid
+                ORDER BY evaluationrunid
             """)
             rows_test = cursor.fetchall()
 
